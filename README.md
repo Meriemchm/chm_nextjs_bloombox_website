@@ -22,7 +22,7 @@ bun dev
 Then open http://localhost:3000
  in your browser to see the result.
 
-You can start editing the page by modifying # app/page.tsx.
+You can start editing the page by modifying **`app/page.tsx`**
 The page will automatically update as you make changes.
 
 This project uses next/font to automatically optimize and load Geist, a modern font family from Vercel.
