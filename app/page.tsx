@@ -6,7 +6,7 @@ import { WhySection } from "@/components/why-section/why-section";
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen overflow-hidden">
       <div className="bg-primary">
         <Container className="py-30">
           <Hero />
