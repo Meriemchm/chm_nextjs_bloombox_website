@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
     //  Resend send
     await resend.emails.send({
-      from: "contact@BloomBox.com",
+      from: "onboarding@resend.dev",
       to: email,
       subject: "Welcome to our newsletter!",
       html: `<p>Hi there 🌸,<br/>Thanks for subscribing to our newsletter!</p>`,
