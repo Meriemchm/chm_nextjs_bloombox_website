@@ -63,7 +63,7 @@ export const Membership = () => {
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 justify-center items-center"
+            className="flex flex-col gap-4 justify-center items-center w-full max-w-sm "
           >
             <input
               type="email"
@@ -72,10 +72,10 @@ export const Membership = () => {
               {...register("email")}
               className={`p-2 border ${
                 errors.email ? "border-red-500" : "border-black"
-              } w-64 md:w-96 `}
+              } w-full`}
             />
             {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
+              <p className="text-red-500 text-sm text-start">{errors.email.message}</p>
             )}
 
             <Button
