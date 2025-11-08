@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef,useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SplitText from "gsap/SplitText";
@@ -41,48 +41,62 @@ export function useGsapTextSplit() {
 type Direction = "up" | "down" | "left" | "right";
 
 export function useGsapFade(direction: Direction = "up") {
-  const ref = useRef<HTMLDivElement>(null);
+  // ✅ Peut contenir un seul élément ou plusieurs
+  const refs = useRef<(HTMLElement | null)[]>([]);
   const pathname = usePathname();
 
-  useGSAP(
-    () => {
-      if (!ref.current) return;
+  useEffect(() => {
+    if (!refs.current.length) return;
 
-      // définir la position de départ selon la direction
-      const distance = 100;
-      const fromVars: Record<string, number> = {};
+    const distance = 100;
+    const fromVars: Record<string, number> = {};
 
-      switch (direction) {
-        case "up":
-          fromVars.y = distance;
-          break;
-        case "down":
-          fromVars.y = -distance;
-          break;
-        case "left":
-          fromVars.x = distance;
-          break;
-        case "right":
-          fromVars.x = -distance;
-          break;
-      }
+    switch (direction) {
+      case "up":
+        fromVars.y = distance;
+        break;
+      case "down":
+        fromVars.y = -distance;
+        break;
+      case "left":
+        fromVars.x = distance;
+        break;
+      case "right":
+        fromVars.x = -distance;
+        break;
+    }
 
-      gsap.from(ref.current, {
+    // ✅ Animation sur tous les éléments
+    refs.current.forEach((el) => {
+      if (!el) return;
+      gsap.from(el, {
         ...fromVars,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: ref.current,
+          trigger: el,
           start: "top 80%",
           toggleActions: "play none none reverse",
         },
       });
+    });
 
-      ScrollTrigger.refresh();
-    },
-    { dependencies: [pathname], scope: ref }
-  );
+    ScrollTrigger.refresh();
 
-  return ref;
+    return () => {
+      ScrollTrigger.getAll().forEach((st) => st.kill());
+    };
+  }, [direction, pathname]);
+
+  // ✅ Fonction pour attacher chaque ref individuellement
+  const setRef = (el: HTMLElement | null, index?: number) => {
+    if (index !== undefined) {
+      refs.current[index] = el;
+    } else {
+      refs.current[0] = el;
+    }
+  };
+
+  return setRef;
 }

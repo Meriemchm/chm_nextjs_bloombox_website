@@ -4,22 +4,23 @@ import { HowItWorksItems } from "../data/data";
 import { useGsapFade } from "@/hooks/gsap-animations";
 
 export const HowItWorks = () => {
-  const fadeRef = useGsapFade("up");
+  const fadeRef_1 = useGsapFade("up");
+  const fadeRef_2 = useGsapFade("up");
   return (
-    <div ref={fadeRef} className="flex flex-col justify-center items-center">
-      <p className="pinyon-script-regular md:text-7xl text-6xl pb-20 ">
-        How it works
-      </p>
-      <div
-        ref={fadeRef}
-        className="grid md:grid-cols-3 grid-cols-1 justify-center items-center gap-6 md:gap-16 "
-      >
+    <div className="flex flex-col justify-center items-center">
+      <div ref={fadeRef_1}>
+        <p className="pinyon-script-regular md:text-7xl text-6xl pb-20 ">
+          How it works
+        </p>
+      </div>
+      <div className="grid md:grid-cols-3 grid-cols-1 justify-center items-center gap-6 md:gap-16 ">
         {
           /* Add your content here */
 
           HowItWorksItems.map((item, index) => (
             <div
               key={index}
+              ref={(el) =>  fadeRef_2(el,index)}
               className="flex justify-center items-center flex-col mt-10 "
             >
               <Image
