@@ -1,12 +1,12 @@
 "use client";
 
-import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import emailjs from "@emailjs/browser";
 import Button from "../ui/button";
 import { Container } from "../ui/container";
 import { useGsapFade } from "@/hooks/gsap-animations";
@@ -32,18 +32,19 @@ export const Membership = () => {
   });
 
   const onSubmit = async (data: MembershipFormData) => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await axios.post("/api/subscribe", data);
-
-      toast.success(res.data.message || "Subscription successful!");
-      reset();
-    } catch (err: any) {
-      console.error(err);
-      toast.error(
-        err.response?.data?.message ||
-          "Something went wrong. Please try again later."
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        { email: data.email },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
+      toast.success("Subscription successful!");
+      reset();
+    } catch (err) {
+      console.error("Error sending email:", err);
+      toast.error("Something went wrong. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,10 @@ export const Membership = () => {
   return (
     <div className="bg-secondary py-30 relative z-40">
       <Container>
-        <div ref={fadeRef} className="relative z-40 flex flex-col justify-center items-center w-full">
+        <div
+          ref={fadeRef}
+          className="relative z-40 flex flex-col justify-center items-center w-full"
+        >
           <h2 className="pinyon-script-regular md:text-7xl text-5xl">
             Stay in Bloom
           </h2>
@@ -63,7 +67,7 @@ export const Membership = () => {
 
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4 justify-center items-center w-full max-w-sm "
+            className="flex flex-col gap-4 justify-center items-center w-full max-w-sm"
           >
             <input
               type="email"
@@ -75,7 +79,9 @@ export const Membership = () => {
               } w-full`}
             />
             {errors.email && (
-              <p className="text-red-500 text-sm self-start">{errors.email.message}</p>
+              <p className="text-red-500 text-sm self-start">
+                {errors.email.message}
+              </p>
             )}
 
             <Button

@@ -1,29 +1,28 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import emailjs from "emailjs-com";
 
 export async function POST(req: Request) {
+  const { email } = await req.json();
+
+  if (!email) {
+    return NextResponse.json({ message: "Email is required" }, { status: 400 });
+  }
+
   try {
-    const { email } = await req.json();
+    await emailjs.send(
+      process.env.EMAILJS_SERVICE_ID!,
+      process.env.EMAILJS_TEMPLATE_ID!,
+      {
+        to_email: email, // destinataire dynamique
+      },
+      process.env.EMAILJS_PUBLIC_KEY!
+    );
 
-    if (!email) {
-      return NextResponse.json({ message: "Email is required" }, { status: 400 });
-    }
-
-    //  Resend send
-    await resend.emails.send({
-      from: "onboarding@resend.dev",
-      to: email,
-      subject: "Welcome to our newsletter!",
-      html: `<p>Hi there 🌸,<br/>Thanks for subscribing to our newsletter!</p>`,
-    });
-
-    return NextResponse.json({ message: "Subscription successful! Check your inbox 💌" });
-  } catch (error: any) {
-    console.error(error);
+    return NextResponse.json({ message: "Email sent to user!" });
+  } catch (err) {
+    console.error("Error sending email:", err);
     return NextResponse.json(
-      { message: "Failed to send email. Please try again later." },
+      { message: "Failed to send email" },
       { status: 500 }
     );
   }
