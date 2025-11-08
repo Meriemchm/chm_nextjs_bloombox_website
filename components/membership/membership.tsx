@@ -75,7 +75,7 @@ export const Membership = () => {
               } w-full`}
             />
             {errors.email && (
-              <p className="text-red-500 text-sm text-start">{errors.email.message}</p>
+              <p className="text-red-500 text-sm self-start">{errors.email.message}</p>
             )}
 
             <Button
